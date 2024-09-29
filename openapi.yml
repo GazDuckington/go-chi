@@ -1,0 +1,246 @@
+openapi: 3.0.3
+info:
+  title: bumn-go
+  description: ''
+  version: 1.0.0
+paths:
+  '/':
+    get:
+      description: ''
+      summary: public
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []
+  /admin:
+    get:
+      description: ''
+      summary: private
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security:
+        - bearerAuth: []
+  /entries:
+    get:
+      description: ''
+      summary: get all
+      tags: []
+      parameters:
+        - name: order_by
+          in: query
+          schema:
+            type: string
+          example: updated_at
+        - name: order
+          in: query
+          schema:
+            type: string
+          example: desc
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []
+    post:
+      description: ''
+      summary: create
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entry_number: '2'
+                content: this is the 2 content
+      security:
+        - bearerAuth: []
+  /entries/b2caa6cd-fc89-4d07-870d-e9f791d5d92b:
+    put:
+      description: ''
+      summary: update
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entry_number: '1'
+                content: >-
+                  0 EDITED content to entry_number 1, should not change
+                  entry_number
+      security:
+        - bearerAuth: []
+  /entries/id/b2caa6cd-fc89-4d07-870d-e9f791d5d92b:
+    get:
+      description: ''
+      summary: get by id
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []
+  /entries/num/1.1:
+    get:
+      description: ''
+      summary: get by num
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []
+  /entries/search:
+    get:
+      description: ''
+      summary: search entries
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []
+  /entries/ea90dc25-0276-4908-9aa9-237e9bad4502:
+    delete:
+      description: ''
+      summary: delete
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security:
+        - bearerAuth: []
+  /register:
+    post:
+      description: ''
+      summary: register user
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: test
+                password: test123
+      security: []
+  /login:
+    post:
+      description: ''
+      summary: login
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: test
+                password: test123
+      security: []
+servers:
+  - description: Base Environment
+    url: "http://127.0.0.1:3333"
+    variables:
+      token:
+        default: >-
+          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjR9.ASPmnxPCSS6YcT-jN7-I5o1GcZmDSKIB723PHXOOzYA
+tags: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
