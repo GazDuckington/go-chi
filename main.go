@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bobot/database"
+	"bobot/middleware"
+	repository "bobot/repositories"
 	"fmt"
 	"net/http"
 
@@ -10,13 +13,15 @@ import (
 
 var tokenAuth *jwtauth.JWTAuth
 
+type user_payload map[string]interface{}
+
 func init() {
 	tokenAuth = jwtauth.New("HS256", []byte("secret"), nil)
 
-	// For debugging/example purposes, we generate and print
-	// a sample jwt token with claims `user_id:123` here:
-	_, tokenString, _ := tokenAuth.Encode(map[string]interface{}{"user_id": 123})
+	sample_user := user_payload{"user_id": 124}
+	_, tokenString, _ := tokenAuth.Encode(sample_user)
 	fmt.Printf("DEBUG: a sample jwt is %s\n\n", tokenString)
+	database.ConnectDatabase()
 }
 
 func main() {
@@ -27,6 +32,7 @@ func main() {
 
 func router() http.Handler {
 	r := chi.NewRouter()
+	r.Use(middleware.LogCalls)
 
 	// Protected routes
 	r.Group(func(r chi.Router) {
@@ -38,6 +44,15 @@ func router() http.Handler {
 			_, claims, _ := jwtauth.FromContext(r.Context())
 			w.Write([]byte(fmt.Sprintf("protected area. hi %v", claims["user_id"])))
 		})
+
+		// Create Entry
+		r.Post("/entries", repository.CreateEntry)
+
+		// Update Entry
+		r.Put("/entries/{id}", repository.UpdateEntry)
+
+		// Delete Entry
+		r.Delete("/entries/{id}", repository.DeleteEntry)
 	})
 
 	// Public routes
@@ -45,6 +60,15 @@ func router() http.Handler {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("welcome anonymous"))
 		})
+
+		r.Get("/entries", repository.GetAllEntry)
+		r.Get("/entries/num/{num}", repository.FindEntryByNumber)
+		r.Get("/entries/id/{id}", repository.FindEntryByID)
+		r.Get("/entries/search", repository.GetEntriesByPattern)
+
+		// auths
+		r.Post("/register", repository.CreateUser)
+		r.Post("/login", repository.LoginUser)
 	})
 
 	return r
