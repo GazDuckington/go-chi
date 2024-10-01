@@ -85,8 +85,11 @@ func (e *Entry) Create(db *gorm.DB) error {
 	return db.Create(e).Error
 }
 
-func (e *Entry) Update(db *gorm.DB) error {
-	return db.Omit("ID", "CreatedAt", "Entry_number").Save(e).Error
+func (e *Entry) Update(db *gorm.DB) (*Entry, error) {
+	if err := db.Omit("ID", "CreatedAt", "Entry_number").Save(e).Error; err != nil {
+		return nil, err // Return nil for entry and the error
+	}
+	return e, nil
 }
 
 func (e *Entry) Delete(db *gorm.DB, id uuid.UUID) error {

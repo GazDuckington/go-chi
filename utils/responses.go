@@ -1,5 +1,9 @@
 package utils
 
+import (
+	"log"
+)
+
 func StandardResponse(status bool, data map[string]interface{}) map[string]interface{} {
 	var stat string
 	if status {
@@ -46,15 +50,16 @@ func PaginatedResponse(status bool, data []map[string]interface{}, page, itemsPe
 	}
 }
 
-func CheckDataType(data interface{}) interface{} {
+func CheckDataType(status bool, data interface{}) interface{} {
 	// Check if data is a slice of maps
 	if ret, ok := data.([]map[string]interface{}); ok {
-		return PaginatedResponse(true, ret, 1, 10)
+		return PaginatedResponse(status, ret, 1, 10)
 	}
 
 	// Check if data is a single map
 	if ret, ok := data.(map[string]interface{}); ok {
-		return StandardResponse(true, ret)
+		log.Print("here ya dum dum")
+		return StandardResponse(status, ret)
 	}
 
 	return data

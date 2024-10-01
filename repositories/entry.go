@@ -4,7 +4,9 @@ package repository
 import (
 	"bobot/database"
 	model "bobot/models"
+	"bobot/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -107,13 +109,31 @@ func UpdateEntry(w http.ResponseWriter, r *http.Request) {
 	}
 	entry.ID = id
 
-	if err := entry.Update(database.DB); err != nil {
+	nentry, err := entry.Update(database.DB)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	mentry := model.Entry{
+		ID:           nentry.ID,
+		Entry_number: nentry.Entry_number,
+		Content:      nentry.Content,
+		SearchVector: nentry.SearchVector,
+		UpdatedAt:    nentry.UpdatedAt,
+		CreatedAt:    nentry.CreatedAt,
+	}
+
+	entry_map, err := utils.StructToMap(mentry)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	std_ret := utils.StandardResponse(true, entry_map)
+	log.Print(std_ret)
+
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(entry)
+	json.NewEncoder(w).Encode(std_ret)
 }
 
 func DeleteEntry(w http.ResponseWriter, r *http.Request) {
