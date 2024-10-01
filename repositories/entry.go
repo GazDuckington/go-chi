@@ -6,7 +6,6 @@ import (
 	model "bobot/models"
 	"bobot/utils"
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -130,7 +129,6 @@ func UpdateEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	std_ret := utils.StandardResponse(true, entry_map)
-	log.Print(std_ret)
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(std_ret)
